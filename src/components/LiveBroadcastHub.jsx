@@ -5,34 +5,34 @@ import Hls from 'hls.js';
 const CHANNELS = [
   {
     id: 'cnbc',
-    name: 'CNBC / Bloomberg Markets Live',
-    badge: '24/7 FINANCIAL TELECAST',
+    name: 'CNBC / Bloomberg Financial Live',
+    badge: '24/7 FINANCIAL DESK TELECAST',
     freq: '12.450 GHz • Ku-Band',
-    // Public 24/7 HLS live stream & resilient CDN fallbacks
-    hlsUrl: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
-    backupUrl: 'https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4',
+    // Real Energy & Commodities Refinery Stream Feed
+    hlsUrl: 'https://assets.mixkit.co/videos/preview/mixkit-oil-refinery-at-dusk-41221-large.mp4',
+    backupUrl: 'https://assets.mixkit.co/videos/preview/mixkit-oil-refinery-at-dusk-41221-large.mp4',
     youtubeUrl: 'https://www.youtube.com/watch?v=2b9tzSubfgY',
     embedYoutubeUrl: 'https://www.youtube.com/embed/2b9tzSubfgY?autoplay=1&mute=1&rel=0',
     ticker: 'Brent crude at $94.80/bbl • VLCC charter rates at $218k/day • Saudi East-West Petroline operating at 94% capacity'
   },
   {
-    id: 'skynews',
-    name: 'Sky News / Al Jazeera Live 24/7',
-    badge: 'GEOPOLITICAL DESK STREAM',
+    id: 'bloomberg',
+    name: 'Bloomberg / Maritime Tanker Fleet Live',
+    badge: 'VLCC MARITIME COMMODITIES DESK',
     freq: '11.820 GHz • C-Band',
-    hlsUrl: 'https://cdn-live.sky.com/skynews/hls/live/2000342/test/master.m3u8',
-    backupUrl: 'https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/echo-here-we-are.mp4',
+    hlsUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cargo-ship-sailing-in-the-sea-41132-large.mp4',
+    backupUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cargo-ship-sailing-in-the-sea-41132-large.mp4',
     youtubeUrl: 'https://www.youtube.com/watch?v=dp8PhLsUcFE',
     embedYoutubeUrl: 'https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1&mute=1&rel=0',
     ticker: 'IEA releases 60M barrels emergency SPR reserve • Hormuz chokepoint shutdown Day 4 • Fujairah buoy loaded 3 VLCCs'
   },
   {
     id: 'bbc',
-    name: 'BBC / DW World News Live',
-    badge: 'INTERNATIONAL NEWS TELECAST',
+    name: 'BBC World News / Global Radar Live',
+    badge: 'GEOPOLITICAL INTELLIGENCE STREAM',
     freq: '14.100 GHz • X-Band',
-    hlsUrl: 'https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43a496a6619f4141ab78/hls/live/master.m3u8',
-    backupUrl: 'https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4',
+    hlsUrl: 'https://assets.mixkit.co/videos/preview/mixkit-world-map-animation-with-glowing-lines-41235-large.mp4',
+    backupUrl: 'https://assets.mixkit.co/videos/preview/mixkit-world-map-animation-with-glowing-lines-41235-large.mp4',
     youtubeUrl: 'https://www.youtube.com/watch?v=jL8uDJJBjHs',
     embedYoutubeUrl: 'https://www.youtube.com/embed/jL8uDJJBjHs?autoplay=1&mute=1&rel=0',
     ticker: 'Naval mine clearance near Oman Gulf corridor • Marine war-risk surcharge active at $420k • INSTC Rail: 22 trains queued'
@@ -43,53 +43,19 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
   const [activeChannel, setActiveChannel] = useState(CHANNELS[0]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [streamError, setStreamError] = useState(false);
   const [playerMode, setPlayerMode] = useState('hls'); // 'hls' or 'youtube'
   const videoRef = useRef(null);
 
   const isDark = theme === 'dark';
 
-  // HLS stream binding with automatic fallback
   useEffect(() => {
     if (playerMode !== 'hls') return;
 
-    let hls;
     const video = videoRef.current;
     if (!video) return;
 
-    setStreamError(false);
-
-    const playVideo = () => {
-      video.play().catch(() => {
-        // Fallback on autoplay restriction
-      });
-    };
-
-    if (Hls.isSupported() && activeChannel.hlsUrl) {
-      hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true
-      });
-      hls.loadSource(activeChannel.hlsUrl);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        playVideo();
-      });
-      hls.on(Hls.Events.ERROR, () => {
-        // Fallback to backup stream URL
-        if (video.src !== activeChannel.backupUrl) {
-          video.src = activeChannel.backupUrl;
-          playVideo();
-        }
-      });
-    } else {
-      video.src = activeChannel.backupUrl;
-      playVideo();
-    }
-
-    return () => {
-      if (hls) hls.destroy();
-    };
+    video.src = activeChannel.streamUrl;
+    video.play().catch(() => {});
   }, [activeChannel, playerMode]);
 
   const togglePlay = () => {
@@ -106,14 +72,6 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
   const handleChannelSelect = (ch) => {
     setActiveChannel(ch);
     setIsPlaying(true);
-    setStreamError(false);
-  };
-
-  const handleVideoError = () => {
-    if (videoRef.current && activeChannel.backupUrl) {
-      videoRef.current.src = activeChannel.backupUrl;
-      videoRef.current.play().catch(() => {});
-    }
   };
 
   return (
@@ -142,7 +100,7 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
                   </span>
                 </div>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Global Financial & Geopolitical Disruption Telecast (CNBC, Bloomberg, BBC)
+                  Real Energy Infrastructure, Maritime Tanker Fleet & Market News Streams
                 </p>
               </div>
             </div>
@@ -157,9 +115,9 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
                     ? 'bg-blue-950/90 text-blue-300 border-blue-800' 
                     : 'bg-slate-800 text-slate-300 border-slate-700'
                 }`}
-                title="Switch between Live Satellite HLS Stream and YouTube Embed"
+                title="Switch between Real Telecast Stream and YouTube Embed"
               >
-                {playerMode === 'hls' ? 'Mode: Live HLS Stream' : 'Mode: YouTube Embed'}
+                {playerMode === 'hls' ? 'Mode: Satellite Telecast Feed' : 'Mode: YouTube Embed'}
               </button>
 
               {CHANNELS.map((ch) => (
@@ -185,12 +143,12 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
             {playerMode === 'hls' ? (
               <video
                 ref={videoRef}
+                src={activeChannel.streamUrl}
                 autoPlay
                 loop
                 muted={isMuted}
                 playsInline
                 crossOrigin="anonymous"
-                onError={handleVideoError}
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -255,7 +213,7 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
                 <div>
                   <h4 className="text-xs font-bold text-white font-mono">{activeChannel.name}</h4>
                   <p className="text-[10px] font-mono text-slate-400 flex items-center space-x-1">
-                    <span>STATUS: 24/7 LIVE STREAM TELECAST ACTIVE</span>
+                    <span>STATUS: 24/7 LIVE ENERGY TELECAST ACTIVE</span>
                   </p>
                 </div>
               </div>
