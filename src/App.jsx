@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import Header from './components/Header';
 import LiveTickerBar from './components/LiveTickerBar';
+import LiveCommoditiesBar from './components/LiveCommoditiesBar';
 import Hero from './components/Hero';
 import PolymathMatrix from './components/PolymathMatrix';
 import LiveBroadcastHub from './components/LiveBroadcastHub';
@@ -85,6 +86,11 @@ export default function App() {
 
       {/* Live Energy & Commodity Price Telemetry Ticker Bar */}
       <LiveTickerBar />
+
+      {/* Real-Time Ticking Commodities Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <LiveCommoditiesBar theme={theme} />
+      </div>
 
       <main>
         {/* Section 1: Command Center Executive Hero */}
