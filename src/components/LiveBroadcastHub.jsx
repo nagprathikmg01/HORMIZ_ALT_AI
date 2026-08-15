@@ -1,122 +1,39 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Tv, Radio, Play, Pause, ShieldAlert, Volume2, VolumeX, ExternalLink, RefreshCw, Wifi, Signal, Sparkles } from 'lucide-react';
-import Hls from 'hls.js';
+import React, { useState } from 'react';
+import { Tv, Radio, ShieldAlert, Volume2, ExternalLink, RefreshCw, AlertCircle } from 'lucide-react';
 
-const LIVE_CHANNELS = [
+const DIRECT_YOUTUBE_CHANNELS = [
   {
-    id: 'bloomberg',
-    name: 'Bloomberg / CNBC Financial Live',
-    badge: 'LIVE 24/7 FINANCIAL SATELLITE',
-    freq: '12.450 GHz • Ku-Band',
-    // 24/7 Live HLS Streams & MP4 Live Feeds
-    hlsUrl: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
-    backupUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-    poster: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-    youtubeUrl: 'https://www.youtube.com/watch?v=2b9tzSubfgY',
+    id: 'cnbc',
+    name: 'CNBC International Live',
+    badge: 'LIVE SATELLITE BROADCAST',
+    // Direct YouTube Live Stream Embed
+    embedUrl: 'https://www.youtube.com/embed/2b9tzSubfgY?autoplay=1&mute=0&rel=0&enablejsapi=1',
+    youtubeWatchUrl: 'https://www.youtube.com/watch?v=2b9tzSubfgY',
     ticker: 'Brent jumps to $94.80/bbl • VLCC charter rates hit 12-year high of $218k/day • Saudi East-West Petroline running at 94% rated capacity'
   },
   {
-    id: 'skynews',
-    name: 'Sky News / Al Jazeera Live 24/7',
-    badge: 'GEOPOLITICAL SATELLITE FEED',
-    freq: '11.820 GHz • C-Band',
-    hlsUrl: 'https://cdn-live.sky.com/skynews/hls/live/2000342/test/master.m3u8',
-    backupUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    poster: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=80',
-    youtubeUrl: 'https://www.youtube.com/watch?v=dp8PhLsUcFE',
+    id: 'bloomberg',
+    name: 'Bloomberg Global Markets Live',
+    badge: 'COMMODITIES DESK STREAM',
+    embedUrl: 'https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1&mute=0&rel=0&enablejsapi=1',
+    youtubeWatchUrl: 'https://www.youtube.com/watch?v=dp8PhLsUcFE',
     ticker: 'IEA releases 60M barrels emergency SPR reserve • Hormuz chokepoint shutdown enters Day 4 • Fujairah deepwater buoy loaded 3 VLCCs'
   },
   {
     id: 'bbc',
-    name: 'BBC / DW News World Live',
-    badge: 'INTERNATIONAL NEWS TELECAST',
-    freq: '14.100 GHz • X-Band',
-    hlsUrl: 'https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43a496a6619f4141ab78/hls/live/master.m3u8',
-    backupUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    poster: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80',
-    youtubeUrl: 'https://www.youtube.com/watch?v=jL8uDJJBjHs',
+    name: 'BBC World News Live',
+    badge: 'GEOPOLITICAL DESK STREAM',
+    embedUrl: 'https://www.youtube.com/embed/jL8uDJJBjHs?autoplay=1&mute=0&rel=0&enablejsapi=1',
+    youtubeWatchUrl: 'https://www.youtube.com/watch?v=jL8uDJJBjHs',
     ticker: 'Naval mine clearance underway near Oman Gulf corridor • Marine war-risk surcharge active at $420k per voyage • INSTC Rail Bridge: 22 trains queued'
   }
 ];
 
 export default function LiveBroadcastHub({ theme = 'dark' }) {
-  const [activeChannel, setActiveChannel] = useState(LIVE_CHANNELS[0]);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false); // Enable unmuted audio capability!
-  const [userInteracted, setUserInteracted] = useState(false);
-  const videoRef = useRef(null);
+  const [activeChannel, setActiveChannel] = useState(DIRECT_YOUTUBE_CHANNELS[0]);
+  const [iframeError, setIframeError] = useState(false);
 
   const isDark = theme === 'dark';
-
-  // HLS stream binding
-  useEffect(() => {
-    let hls;
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (Hls.isSupported()) {
-      hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true
-      });
-      hls.loadSource(activeChannel.hlsUrl);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {
-          // If HLS fails or blocked, fallback to backup live video feed
-          video.src = activeChannel.backupUrl;
-          video.play().catch(() => {});
-        });
-      });
-      hls.on(Hls.Events.ERROR, () => {
-        // Fallback on stream error
-        video.src = activeChannel.backupUrl;
-        video.play().catch(() => {});
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = activeChannel.hlsUrl;
-      video.play().catch(() => {
-        video.src = activeChannel.backupUrl;
-        video.play().catch(() => {});
-      });
-    } else {
-      video.src = activeChannel.backupUrl;
-      video.play().catch(() => {});
-    }
-
-    return () => {
-      if (hls) hls.destroy();
-    };
-  }, [activeChannel]);
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(() => {});
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const handleUnmuteAudio = () => {
-    setUserInteracted(true);
-    setIsMuted(false);
-    if (videoRef.current) {
-      videoRef.current.muted = false;
-      videoRef.current.play().catch(() => {});
-    }
-  };
-
-  const toggleMute = () => {
-    setUserInteracted(true);
-    const newMuted = !isMuted;
-    setIsMuted(newMuted);
-    if (videoRef.current) {
-      videoRef.current.muted = newMuted;
-    }
-  };
 
   return (
     <section id="news" className={`py-16 border-b transition-colors ${
@@ -137,27 +54,27 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className={`font-bold text-lg font-sans ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
-                    Crisis Broadcast Telemetry Hub (24/7 Live Stream)
+                    Crisis Broadcast Telemetry Hub (Direct YouTube Live)
                   </h3>
                   <span className="rounded-full bg-red-500/20 px-2.5 py-0.5 text-xs font-mono font-bold tracking-wide text-red-400 border border-red-500/40 flex items-center space-x-1">
                     <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
-                    <span>LIVE SATELLITE TELECAST</span>
+                    <span>DIRECT YOUTUBE LIVE</span>
                   </span>
                 </div>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Continuous 24/7 Live Satellite Stream Telecast with Audio & Intelligence Ticker
+                  Direct YouTube Live TV Broadcasting Stream (CNBC, Bloomberg, BBC World News)
                 </p>
               </div>
             </div>
 
             {/* Channel Selector Pills */}
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-              {LIVE_CHANNELS.map((ch) => (
+              {DIRECT_YOUTUBE_CHANNELS.map((ch) => (
                 <button
                   key={ch.id}
                   onClick={() => {
                     setActiveChannel(ch);
-                    setUserInteracted(true);
+                    setIframeError(false);
                   }}
                   className={`rounded-xl px-3.5 py-2 text-xs font-mono font-bold transition-all flex items-center space-x-1.5 flex-shrink-0 ${
                     activeChannel.id === ch.id
@@ -172,90 +89,36 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
             </div>
           </div>
 
-          {/* Video Stream Player */}
-          <div className="relative mt-5 aspect-video w-full overflow-hidden rounded-xl border border-slate-800 bg-black shadow-2xl group">
+          {/* Direct YouTube Live Video Stream Player */}
+          <div className="relative mt-5 aspect-video w-full overflow-hidden rounded-xl border border-slate-800 bg-black shadow-2xl">
             
-            <video
-              ref={videoRef}
-              poster={activeChannel.poster}
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
-              className="w-full h-full object-cover"
+            <iframe
+              key={activeChannel.id}
+              src={activeChannel.embedUrl}
+              title={activeChannel.name}
+              className="h-full w-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
             />
 
-            {/* Top Satellite Badge Overlay */}
-            <div className="absolute top-4 left-4 z-20 flex items-center space-x-2">
+            {/* Live Badge Overlay */}
+            <div className="absolute top-4 left-4 z-20 flex items-center space-x-2 pointer-events-none">
               <span className="bg-slate-950/90 border border-slate-800 text-emerald-400 text-[11px] font-mono px-3 py-1 rounded-md flex items-center space-x-2 shadow-lg">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
                 <span>{activeChannel.badge}</span>
               </span>
-
-              <span className="bg-slate-950/90 border border-slate-800 text-slate-300 text-[11px] font-mono px-3 py-1 rounded-md hidden sm:flex items-center space-x-1.5">
-                <Signal className="h-3.5 w-3.5 text-sky-400" />
-                <span>{activeChannel.freq}</span>
-              </span>
             </div>
 
-            {/* Prompt Banner to Unmute Live Audio if browser muted */}
-            {isMuted && (
-              <button
-                onClick={handleUnmuteAudio}
-                className="absolute top-16 left-1/2 -translate-x-1/2 z-30 bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-xl text-xs font-mono font-bold shadow-2xl flex items-center space-x-2 animate-bounce border border-sky-400"
-              >
-                <Volume2 className="h-4 w-4" />
-                <span>🔊 CLICK HERE TO UNMUTE LIVE TELECAST AUDIO</span>
-              </button>
-            )}
-
-            {/* Top Right Direct YouTube Link */}
+            {/* Top Right Direct YouTube Watch Button */}
             <a
-              href={activeChannel.youtubeUrl}
+              href={activeChannel.youtubeWatchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute top-4 right-4 z-20 flex items-center space-x-1.5 bg-slate-950/90 hover:bg-black text-sky-400 px-3 py-1 rounded-md text-[11px] font-mono border border-slate-800 shadow-lg"
+              className="absolute top-4 right-4 z-20 flex items-center space-x-1.5 bg-slate-950/90 hover:bg-black text-sky-400 px-3 py-1.5 rounded-md text-[11px] font-mono border border-slate-800 shadow-lg"
             >
-              <span>YouTube Channel</span>
-              <ExternalLink className="h-3 w-3" />
+              <span>Watch Live on YouTube</span>
+              <ExternalLink className="h-3.5 w-3.5" />
             </a>
-
-            {/* Bottom Broadcast Control & Live Audio Bar */}
-            <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/90 backdrop-blur-md p-3.5 rounded-xl border border-slate-800/90 shadow-2xl">
-              
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={togglePlay}
-                  className="p-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white transition-all shadow-md"
-                >
-                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-white" />}
-                </button>
-
-                <button
-                  onClick={toggleMute}
-                  className={`p-2.5 rounded-lg border transition-all ${
-                    isMuted ? 'bg-red-950 border-red-800 text-red-400' : 'bg-emerald-950 border-emerald-800 text-emerald-400 font-bold'
-                  }`}
-                  title={isMuted ? 'Click to Unmute Sound' : 'Mute Sound'}
-                >
-                  {isMuted ? <VolumeX className="h-4 w-4 text-red-400" /> : <Volume2 className="h-4 w-4 text-emerald-400 animate-pulse" />}
-                </button>
-
-                <div>
-                  <h4 className="text-xs font-bold text-white font-mono">{activeChannel.name}</h4>
-                  <p className="text-[10px] font-mono text-emerald-400 flex items-center space-x-1">
-                    <Wifi className="h-3 w-3" />
-                    <span>24/7 LIVE STREAM TELECAST • {isMuted ? '🔇 AUDIO MUTED (CLICK TO UNMUTE)' : '🔊 LIVE AUDIO ENABLED'}</span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="text-[11px] font-mono text-slate-300 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
-                <span className="text-amber-400 font-bold block text-[10px] uppercase">CHANNEL CHYRON</span>
-                <span className="truncate max-w-sm block text-slate-300">{activeChannel.ticker.split('•')[0]}</span>
-              </div>
-
-            </div>
 
           </div>
 
