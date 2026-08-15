@@ -3,7 +3,7 @@ import Header from './components/Header';
 import LiveTickerBar from './components/LiveTickerBar';
 import Hero from './components/Hero';
 import PolymathMatrix from './components/PolymathMatrix';
-import NewsBroadcastSection from './components/NewsBroadcastSection';
+import LiveBroadcastHub from './components/LiveBroadcastHub';
 import FinancialCrisisSection from './components/FinancialCrisisSection';
 import Simulator from './components/Simulator';
 import SimResults from './components/SimResults';
@@ -13,6 +13,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram';
 import AIGeneratorModal from './components/AIGeneratorModal';
 import GTMStrategy from './components/GTMStrategy';
 import VulnerabilitySection from './components/VulnerabilitySection';
+import VideoSection from './components/VideoSection';
 import Footer from './components/Footer';
 
 import { calculateRouteMetrics } from './data/simulationData';
@@ -98,17 +99,23 @@ export default function App() {
           theme={theme}
         />
 
-        {/* Section 3: BBC & Global News Video Broadcast Hub */}
-        <NewsBroadcastSection
+        {/* Section 3: Crisis Live Broadcast Telemetry Hub (CNBC, Bloomberg, BBC) */}
+        <LiveBroadcastHub
           theme={theme}
         />
 
-        {/* Section 4: Financial Crisis & Sovereign SPR Reserve Engine */}
+        {/* Section 4: 2-Minute System Architecture Pitch Video */}
+        <VideoSection
+          onStartSimulation={handleStartSimulation}
+          theme={theme}
+        />
+
+        {/* Section 5: Financial Crisis & Sovereign SPR Reserve Engine */}
         <FinancialCrisisSection
           theme={theme}
         />
 
-        {/* Section 5: Core Product Interactive Multimodal Rerouting Simulator */}
+        {/* Section 6: Core Product Interactive Multimodal Rerouting Simulator */}
         <section id="simulator" className={`py-16 border-b transition-colors ${
           isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
         }`}>
@@ -153,7 +160,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 6: Interactive GIS Route Map Section */}
+        {/* Section 7: Interactive GIS Route Map Section */}
         <section id="map" className={`py-16 border-b transition-colors ${
           isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
         }`}>
@@ -162,7 +169,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 7: Live AI Agent Decision Studio */}
+        {/* Section 8: Live AI Agent Decision Studio */}
         <section id="agent-studio" className={`py-16 border-b transition-colors ${
           isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
         }`}>
@@ -171,23 +178,23 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 8: Systems & Architecture Layer (Polymath Engineering Breakdown) */}
+        {/* Section 9: Systems & Architecture Layer (Polymath Engineering Breakdown) */}
         <ArchitectureDiagram
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
 
-        {/* Section 9: Business Model & Go-To-Market (GTM) Strategy */}
+        {/* Section 10: Business Model & Go-To-Market (GTM) Strategy */}
         <GTMStrategy
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
 
-        {/* Section 10: Critical Self-Awareness & Limits (Vulnerability Analysis) */}
+        {/* Section 11: Critical Self-Awareness & Limits (Vulnerability Analysis) */}
         <VulnerabilitySection
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
       </main>
 
-      {/* Section 11: Submission Metadata & Footer */}
+      {/* Section 12: Submission Metadata & Footer */}
       <Footer />
 
       {/* Interactive AI CPO Executive Memo Synthesizer Modal */}
