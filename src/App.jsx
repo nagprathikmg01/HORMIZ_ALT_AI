@@ -12,6 +12,7 @@ import RouteMap from './components/RouteMap';
 import AIAgentStudio from './components/AIAgentStudio';
 import ArchitectureDiagram from './components/ArchitectureDiagram';
 import AIGeneratorModal from './components/AIGeneratorModal';
+import DatabaseSchemaModal from './components/DatabaseSchemaModal';
 import GTMStrategy from './components/GTMStrategy';
 import VulnerabilitySection from './components/VulnerabilitySection';
 import VideoSection from './components/VideoSection';
@@ -23,6 +24,7 @@ export default function App() {
   const [theme, setTheme] = useState('dark');
   const [activeTab, setActiveTab] = useState('hero');
   const [isAIMemoOpen, setIsAIMemoOpen] = useState(false);
+  const [isDbSchemaOpen, setIsDbSchemaOpen] = useState(false);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
@@ -187,6 +189,8 @@ export default function App() {
         {/* Section 9: Systems & Architecture Layer (Polymath Engineering Breakdown) */}
         <ArchitectureDiagram
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
+          onOpenDbSchema={() => setIsDbSchemaOpen(true)}
+          theme={theme}
         />
 
         {/* Section 10: Business Model & Go-To-Market (GTM) Strategy */}
@@ -209,6 +213,13 @@ export default function App() {
         onClose={() => setIsAIMemoOpen(false)}
         simParams={simParams}
         metrics={metrics}
+      />
+
+      {/* Database Relational Schema DDL Modal */}
+      <DatabaseSchemaModal
+        isOpen={isDbSchemaOpen}
+        onClose={() => setIsDbSchemaOpen(false)}
+        theme={theme}
       />
 
     </div>
