@@ -19,34 +19,34 @@ The platform integrates spatio-temporal Graph Neural Networks (GNN), multi-commo
 - **Executive Dark Mode & Professional Light Mode**: Seamless theme switcher built using Stitch MCP enterprise guidelines (no neon/cyberpunk aesthetics).
 - **Refined Typography & Micro-Borders**: Built with *Plus Jakarta Sans* and *Inter*.
 
-### 📈 2. Real-Time Energy & Commodity Market Telemetry (`LiveTickerBar.jsx`)
-- Streams real-time market data for **Brent Crude (ICE)**, **WTI Crude (NYMEX)**, **Dubai Sour Platts**, **VLCC Spot Charter Day Rates ($218,500/day)**, and **War Risk Insurance Surcharges ($420k/voyage)**.
+### 🏆 2. Polymath 8-Dimension Intersection Matrix (`PolymathMatrix.jsx`)
+- Dedicated visual table highlighting cross-domain synthesis across all 8 evaluation dimensions (Systems Thinking, AI Literacy, Software Architecture, Cybersecurity, Applied Psychology, Global GTM, Chemical Engineering, Macroeconomics).
 
-### 📺 3. BBC & Global News Video Broadcast Hub (`NewsBroadcastSection.jsx`)
+### 🛡️ 3. AIS Telemetry & Spoofing Defense (`AIAgentStudio.jsx`)
+- Interactive `[Shield] AIS Zero-Trust Integrity Engine` toggle filtering spoofed GPS transponders (e.g. 48-knot impossible VLCC speeds).
+
+### 🧪 4. Refinery Chemical Blend Incompatibility Diagnostic (`Simulator.jsx`)
+- `Crude API Gravity & Sulfur Mismatch Warning` card detailing hydrocracker desulfurization penalties (+3.2%) and margin impacts (-$1.40/bbl).
+
+### 📺 5. BBC & Global News Video Broadcast Hub (`NewsBroadcastSection.jsx`)
 - Broadcasts video coverage from **BBC News Channel**, **Bloomberg Television**, and **CNBC International**.
 - Live breaking news ticker & verified geopolitical war incident feed drawer with threat level badges (`CRITICAL`, `HIGH`, `MEDIUM`).
 
-### 💵 4. Financial Crisis & Sovereign Reserve (SPR) Engine (`FinancialCrisisSection.jsx`)
+### 💵 6. Financial Crisis & Sovereign Reserve (SPR) Engine (`FinancialCrisisSection.jsx`)
 - Interactive Crude Price Panic Shock slider ($80 to $150/bbl).
 - Sovereign Strategic Petroleum Reserve (SPR) depletion countdown for **United States**, **China**, **India**, **Japan & South Korea**, and **European Union (IEA)**.
-- Macroeconomic trade deficit drain and CPI inflation surge calculations.
 
-### 🔀 5. Multimodal Supply Rerouting Simulator (`Simulator.jsx`, `SimResults.jsx`)
+### 🔀 7. Multimodal Supply Rerouting Simulator (`Simulator.jsx`, `SimResults.jsx`)
 - Evaluates 3 primary overland and rail bypass corridors:
   - **Alt 1**: Saudi East-West Petroline (5.0M bpd to Yanbu) + Cape Bypass Tankers.
   - **Alt 2**: Fujairah ADCOP Deepwater Offloading (1.5M bpd Habshan Pipeline).
   - **Alt 3**: INSTC Multimodal Eurasian Land-Bridge (Bandar Abbas / Caspian Rail).
-- Interactive Recharts Bar & Radar charts, dynamic output metrics table (+8 to +14 transit days, freight $/bbl premium, capacity saturation %, CO2 delta), and commodity futures hedging recommendations.
 
-### 🗺️ 6. Interactive GIS Geographic Route Map (`RouteMap.jsx`)
-- Leaflet GIS map displaying true geographic coordinates for Middle East pipelines, the Strait chokepoint, and global destination refinery hubs (Jamnagar India, Ningbo China, Rotterdam Netherlands).
+### 🗺️ 8. Interactive GIS Geographic Route Map (`RouteMap.jsx`)
+- Leaflet GIS map displaying true geographic coordinates for Middle East pipelines, the Strait chokepoint, and global destination refinery hubs.
 
-### 🤖 7. Live AI Agent Reasoning & Execution Studio (`AIAgentStudio.jsx`)
-- Real-time terminal log showing GNN edge updates, MILP solver convergence (14.2ms), and SAP S/4HANA PO dispatches.
-- Persona Switcher: *Sovereign SPR Defense Manager*, *Refinery Operations Chief*, *Commodity Arbitrage Trader*.
-
-### ⚠️ 8. Critical Vulnerability Analysis (`VulnerabilitySection.jsx`)
-- Identifies physical limits: Overland pipeline capacity ceilings (~6.5M bpd max bypass vs 21M bpd flow), VLCC supertanker charter shortages (+14-day Cape voyage), Bab-el-Mandeb cascading threats, and refinery crude API blend mismatches.
+### 🎬 9. Interactive Pitch Video with Timestamps & Verbatim Script (`VideoSection.jsx`)
+- Clickable timestamp buttons (`[0:00]`, `[0:35]`, `[1:10]`, `[1:45]`) and verbatim pitch script transcript.
 
 ---
 
@@ -65,8 +65,8 @@ The platform integrates spatio-temporal Graph Neural Networks (GNN), multi-commo
 
 ```bash
 # Clone the repository
-git clone https://github.com/nagprathikmg01/hackathon.git
-cd hackathon
+git clone https://github.com/nagprathikmg01/HORMIZ_ALT_AI.git
+cd HORMIZ_ALT_AI
 
 # Install dependencies
 npm install
@@ -84,4 +84,5 @@ Server runs live at `http://localhost:5174/`.
 - **Candidate**: Nag Prathik M G
 - **Institution**: NMIT Bangalore
 - **Fellowship**: Polymath Innovae Fellowship 2026 (Step 3 Problem Statement Submission)
+- **Repository**: [https://github.com/nagprathikmg01/HORMIZ_ALT_AI.git](https://github.com/nagprathikmg01/HORMIZ_ALT_AI.git)
 - **Portfolio**: [https://prathikrepo.vercel.app/](https://prathikrepo.vercel.app/)

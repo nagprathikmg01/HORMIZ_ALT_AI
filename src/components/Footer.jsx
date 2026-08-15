@@ -19,9 +19,9 @@ export default function Footer() {
           {/* Brand & Fellowship Info (5 Columns) */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 p-0.5">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-sky-500 to-emerald-500 p-0.5">
                 <div className="h-full w-full bg-slate-950 rounded-[6px] flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-cyan-400" />
+                  <Zap className="h-4 w-4 text-sky-400" />
                 </div>
               </div>
               <span className="text-base font-bold text-white font-mono">HORMIZ-ALT AI</span>
@@ -31,7 +31,7 @@ export default function Footer() {
               Global Energy Logistics & Strategic Rerouting Engine. Step 3 Problem Statement Submission for the Polymath Innovae Fellowship (Eonexea AI): "Strait of Hormuz: Design an Alternative".
             </p>
 
-            <div className="flex items-center space-x-2 text-[11px] font-mono text-cyan-400">
+            <div className="flex items-center space-x-2 text-[11px] font-mono text-sky-400">
               <Award className="h-3.5 w-3.5" />
               <span>Polymath Innovae Fellowship 2026 Submission</span>
             </div>
@@ -57,7 +57,7 @@ export default function Footer() {
                 href="https://prathikrepo.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 transition-colors bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 hover:border-cyan-500/40"
+                className="flex items-center space-x-2 text-sky-400 hover:text-sky-300 transition-colors bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 hover:border-sky-500/40"
               >
                 <Globe className="h-3.5 w-3.5" />
                 <span>Main Portfolio</span>
@@ -65,7 +65,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://github.com"
+                href="https://github.com/nagprathikmg01/HORMIZ_ALT_AI.git"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors bg-slate-900 px-3 py-2 rounded-lg border border-slate-800"
