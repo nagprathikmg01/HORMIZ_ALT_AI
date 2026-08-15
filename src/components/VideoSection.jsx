@@ -170,9 +170,12 @@ export default function VideoSection({ onStartSimulation, theme = 'dark' }) {
             <div className="relative aspect-video bg-slate-950 flex items-center justify-center overflow-hidden">
               <video
                 ref={videoRef}
-                src="/hormuz-pitch.mp4"
-                className="w-full h-full object-cover"
+                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                 poster="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80"
+                className="w-full h-full object-cover"
+                loop
+                muted={isMuted}
+                playsInline
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40 pointer-events-none" />
