@@ -14,10 +14,11 @@ import {
   Layers, 
   ChevronRight,
   MonitorPlay,
-  RotateCcw
+  RotateCcw,
+  Sparkles
 } from 'lucide-react';
 
-export default function VideoSection({ onStartSimulation }) {
+export default function VideoSection({ onStartSimulation, theme = 'dark' }) {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -25,45 +26,43 @@ export default function VideoSection({ onStartSimulation }) {
   const [isMuted, setIsMuted] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const [activeChapter, setActiveChapter] = useState(0);
-  const [showTranscript, setShowTranscript] = useState(false);
+  const [showScript, setShowScript] = useState(false);
+
+  const isDark = theme === 'dark';
 
   const chapters = [
     {
       time: 0,
       label: '0:00',
-      title: 'Problem Statement: Strait of Hormuz 21M bpd Chokepoint',
-      desc: 'Why existing global supply chains collapse during naval blockades and asymmetric mine hazards.'
+      title: 'Business Situation & 21M bpd Chokepoint Risk',
+      desc: 'The crisis: Strait of Hormuz 21M bpd single point of failure, decision paralysis, and freight shocks.'
     },
     {
       time: 35,
       label: '0:35',
-      title: 'Multimodal MILP Heuristics & Route Optimization',
-      desc: 'Evaluating Saudi Petroline, UAE ADCOP Habshan, and INSTC Caspian rail corridors.'
+      title: 'Multimodal Graph Solver (Petroline & ADCOP Pipelines)',
+      desc: 'Evaluating Saudi Petroline, UAE Habshan ADCOP, and INSTC Caspian multimodal rail corridors.'
     },
     {
       time: 70,
       label: '1:10',
-      title: 'AI Risk Synthesizer & Enterprise ERP Integration',
-      desc: 'Translating war-risk insurance premiums into automated SAP/Oracle purchase orders.'
+      title: 'AIS Cyber-Defense & ERP Procurement Directives',
+      desc: 'AIS Zero-Trust spoofing filters, LLM Risk Synthesizer, and automated SAP/Oracle ERP webhooks.'
     },
     {
       time: 105,
       label: '1:45',
-      title: 'Monetization, Sovereign SPR Defense & GTM Strategy',
-      desc: 'Enterprise tiering ($50k/mo) and strategic petroleum reserve inventory hedging.'
+      title: 'Business Model & Unsolvable Physical Bottlenecks',
+      desc: 'Enterprise tier ($50k/mo), sovereign SPR defense, and 6.5M bpd physical pipeline ceilings.'
     }
   ];
 
-  // Handle Play/Pause
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
       } else {
-        videoRef.current.play().catch(() => {
-          // If media file not loaded, toggle simulated state
-          setIsPlaying(true);
-        });
+        videoRef.current.play().catch(() => setIsPlaying(true));
       }
       setIsPlaying(!isPlaying);
     } else {
@@ -71,7 +70,6 @@ export default function VideoSection({ onStartSimulation }) {
     }
   };
 
-  // Simulated timer for fallback video state
   useEffect(() => {
     let interval;
     if (isPlaying) {
@@ -88,7 +86,6 @@ export default function VideoSection({ onStartSimulation }) {
     return () => clearInterval(interval);
   }, [isPlaying, duration, playbackSpeed]);
 
-  // Update active chapter based on time
   useEffect(() => {
     if (currentTime >= 105) setActiveChapter(3);
     else if (currentTime >= 70) setActiveChapter(2);
@@ -119,16 +116,6 @@ export default function VideoSection({ onStartSimulation }) {
     }
   };
 
-  const togglePiP = async () => {
-    if (videoRef.current && document.pictureInPictureEnabled) {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-      } else {
-        await videoRef.current.requestPictureInPicture().catch(() => {});
-      }
-    }
-  };
-
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -136,116 +123,93 @@ export default function VideoSection({ onStartSimulation }) {
   };
 
   return (
-    <section id="video" className="py-16 bg-slate-950 border-b border-slate-800/80 relative">
+    <section id="video" className={`py-16 border-b transition-colors relative ${
+      isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center space-x-2 bg-cyan-950/80 border border-cyan-500/40 px-3 py-1 rounded-full text-xs font-mono text-cyan-300 mb-3">
-              <MonitorPlay className="h-3.5 w-3.5 text-cyan-400" />
-              <span>Step 3 Top Submission Requirement</span>
+            <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-mono mb-3 ${
+              isDark ? 'bg-sky-950/80 border border-sky-500/40 text-sky-300' : 'bg-sky-50 border border-sky-200 text-sky-700'
+            }`}>
+              <Sparkles className="h-3.5 w-3.5 text-sky-500" />
+              <span>Watch 2-Min System Architecture Pitch (With Timestamps)</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-sans">
-              2-Minute Explanatory Pitch Video
+            
+            <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight font-sans ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              2-Minute System Architecture Pitch
             </h2>
-            <p className="text-sm text-slate-400 mt-2 max-w-2xl">
-              Walkthrough of our multimodal rerouting heuristics, predictive inventory allocation, and enterprise SaaS roll-out strategy for global energy supply chain defense.
+            <p className={`text-sm mt-2 max-w-2xl ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Walkthrough of our multimodal graph solver, AIS Zero-Trust spoofing defense, SAP/Oracle ERP dispatches, and enterprise SaaS roll-out strategy.
             </p>
           </div>
 
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => setShowTranscript(!showTranscript)}
-              className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 px-3.5 py-2 rounded-xl text-xs font-medium transition-all"
+              onClick={() => setShowScript(!showScript)}
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-all ${
+                isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100 shadow-xs'
+              }`}
             >
-              <FileText className="h-4 w-4 text-cyan-400" />
-              <span>{showTranscript ? 'Hide Transcript' : 'View Executive Transcript'}</span>
+              <FileText className="h-4 w-4 text-sky-500" />
+              <span>{showScript ? 'Hide Script' : 'View Verbatim Pitch Script'}</span>
             </button>
-
-            <a
-              href="#video"
-              onClick={(e) => {
-                e.preventDefault();
-                alert('Pitch Deck Executive Brief PDF download initiated.');
-              }}
-              className="flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-3.5 py-2 rounded-xl text-xs font-medium transition-all"
-            >
-              <Download className="h-4 w-4 text-emerald-400" />
-              <span>Download PDF Deck</span>
-            </a>
           </div>
         </div>
 
-        {/* Main Video & Chapters Layout */}
+        {/* Main Video & Timestamps Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Video Player Card (8 Columns) */}
-          <div className="lg:col-span-8 glass-card rounded-2xl border border-slate-800 overflow-hidden shadow-2xl shadow-cyan-950/20 relative group">
+          <div className={`lg:col-span-8 rounded-2xl border overflow-hidden shadow-xl ${
+            isDark ? 'stitch-card-dark' : 'stitch-card-light'
+          }`}>
             
-            {/* Video Container */}
             <div className="relative aspect-video bg-slate-950 flex items-center justify-center overflow-hidden">
-              
-              {/* Native HTML5 Video Element */}
               <video
                 ref={videoRef}
                 src="/hormuz-pitch.mp4"
                 className="w-full h-full object-cover"
-                onTimeUpdate={() => {
-                  if (videoRef.current) setCurrentTime(videoRef.current.currentTime);
-                }}
-                onLoadedMetadata={() => {
-                  if (videoRef.current) setDuration(videoRef.current.duration);
-                }}
                 poster="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80"
               />
 
-              {/* Animated Interactive Visual Overlay (When media is playing or as pitch canvas fallback) */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40 pointer-events-none" />
 
-              {/* Pitch Canvas Simulation Overlay Details */}
-              <div className="absolute top-4 left-4 flex items-center space-x-2 z-10">
-                <span className="bg-slate-950/90 border border-slate-800 text-cyan-400 text-[11px] font-mono px-2.5 py-1 rounded-md flex items-center space-x-1.5">
-                  <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
+              {/* Overlay Badge */}
+              <div className="absolute top-4 left-4 z-10 flex items-center space-x-2">
+                <span className="bg-slate-950/90 border border-slate-800 text-sky-400 text-[11px] font-mono px-2.5 py-1 rounded-md flex items-center space-x-1.5">
+                  <span className="h-2 w-2 rounded-full bg-sky-400 animate-ping" />
                   <span>CHAPTER {activeChapter + 1}/4</span>
                 </span>
                 <span className="bg-slate-950/90 border border-slate-800 text-slate-300 text-[11px] font-mono px-2.5 py-1 rounded-md hidden sm:inline">
-                  {chapters[activeChapter].title.split(':')[0]}
+                  {chapters[activeChapter].title}
                 </span>
               </div>
 
-              {/* Center Play Overlay Button */}
               {!isPlaying && (
                 <button
                   onClick={togglePlay}
-                  className="absolute z-20 h-20 w-20 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 p-0.5 shadow-2xl shadow-cyan-500/50 transform transition-all hover:scale-110"
+                  className="absolute z-20 h-20 w-20 rounded-full bg-sky-600 text-white flex items-center justify-center pl-1 shadow-2xl hover:scale-110 transition-all"
                 >
-                  <div className="h-full w-full bg-slate-950/90 rounded-full flex items-center justify-center pl-1">
-                    <Play className="h-8 w-8 text-cyan-400 fill-cyan-400" />
-                  </div>
+                  <Play className="h-8 w-8 fill-white" />
                 </button>
               )}
 
-              {/* Dynamic Video Graphic Canvas Preview overlay */}
               <div className="absolute inset-x-8 top-1/3 bottom-20 pointer-events-none flex flex-col justify-center items-center text-center z-10">
-                <div className="glass-card px-4 py-3 rounded-xl border border-cyan-500/30 bg-slate-950/80 max-w-md">
-                  <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest block mb-1">PITCH WALKTHROUGH DEMO</span>
-                  <p className="text-sm text-white font-semibold">
-                    {chapters[activeChapter].title}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">
-                    {chapters[activeChapter].desc}
-                  </p>
+                <div className="bg-slate-950/90 border border-slate-800 p-4 rounded-xl max-w-md">
+                  <span className="text-xs font-mono text-sky-400 uppercase tracking-widest block mb-1">SYSTEM ARCHITECTURE PITCH</span>
+                  <p className="text-sm text-white font-bold">{chapters[activeChapter].title}</p>
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">{chapters[activeChapter].desc}</p>
                 </div>
               </div>
 
             </div>
 
-            {/* Custom Video Controls Bar */}
-            <div className="bg-slate-950 border-t border-slate-800 px-4 py-3">
-              
-              {/* Scrubbing Progress Bar */}
-              <div className="mb-3 relative group/progress cursor-pointer">
+            {/* Video Controls Bar */}
+            <div className="bg-slate-950 border-t border-slate-800 px-4 py-3 text-xs font-mono">
+              <div className="mb-3 relative cursor-pointer">
                 <input
                   type="range"
                   min="0"
@@ -256,88 +220,50 @@ export default function VideoSection({ onStartSimulation }) {
                     setCurrentTime(val);
                     if (videoRef.current) videoRef.current.currentTime = val;
                   }}
-                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400 group-hover/progress:h-2.5 transition-all"
+                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
                 />
-                
-                {/* Chapter Marker Dots on Timeline */}
-                <div className="absolute top-0 inset-x-0 h-1.5 pointer-events-none flex justify-between px-1">
-                  {chapters.map((ch, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`h-2 w-2 rounded-full -mt-0.25 ${activeChapter === idx ? 'bg-cyan-400 ring-2 ring-cyan-400/50' : 'bg-slate-600'}`}
-                      style={{ left: `${(ch.time / duration) * 100}%` }}
-                    />
-                  ))}
-                </div>
               </div>
 
-              {/* Control Buttons & Indicators */}
-              <div className="flex items-center justify-between gap-4 text-xs font-mono">
-                
+              <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center space-x-3">
-                  <button
-                    onClick={togglePlay}
-                    className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 transition-all"
-                  >
-                    {isPlaying ? <Pause className="h-4 w-4 text-cyan-400" /> : <Play className="h-4 w-4 text-cyan-400 fill-cyan-400" />}
+                  <button onClick={togglePlay} className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-sky-400">
+                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-sky-400" />}
                   </button>
-
-                  <button
-                    onClick={() => seekToChapter(0, 0)}
-                    className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800"
-                    title="Restart Video"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
+                  <button onClick={toggleMute} className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">
+                    {isMuted ? <VolumeX className="h-4 w-4 text-red-400" /> : <Volume2 className="h-4 w-4 text-sky-400" />}
                   </button>
-
-                  <button
-                    onClick={toggleMute}
-                    className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800"
-                  >
-                    {isMuted ? <VolumeX className="h-4 w-4 text-red-400" /> : <Volume2 className="h-4 w-4 text-cyan-400" />}
-                  </button>
-
                   <span className="text-slate-400">
                     <span className="text-white font-bold">{formatTime(currentTime)}</span> / {formatTime(duration)}
                   </span>
                 </div>
 
-                {/* Right Speed & Mode Controls */}
                 <div className="flex items-center space-x-2">
                   <div className="flex items-center space-x-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
                     {[1.0, 1.25, 1.5, 2.0].map((s) => (
                       <button
                         key={s}
                         onClick={() => handleSpeedChange(s)}
-                        className={`px-2 py-0.5 rounded text-[11px] font-mono ${playbackSpeed === s ? 'bg-cyan-950 text-cyan-400 border border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-white'}`}
+                        className={`px-2 py-0.5 rounded text-[11px] font-mono ${playbackSpeed === s ? 'bg-sky-950 text-sky-400 border border-sky-500/40 font-bold' : 'text-slate-400'}`}
                       >
                         {s}x
                       </button>
                     ))}
                   </div>
-
-                  <button
-                    onClick={togglePiP}
-                    className="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 hidden sm:block"
-                    title="Picture in Picture"
-                  >
-                    <PictureInPicture className="h-4 w-4" />
-                  </button>
                 </div>
-
               </div>
-
             </div>
+
           </div>
 
-          {/* Chapters & Interactive Agenda Card (4 Columns) */}
+          {/* Clickable Chapters & Timestamps (4 Columns) */}
           <div className="lg:col-span-4 space-y-4">
-            
-            <div className="glass-card rounded-2xl p-5 border border-slate-800">
+            <div className={`rounded-2xl p-5 border ${isDark ? 'stitch-card-dark' : 'stitch-card-light'}`}>
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
                 <div className="flex items-center space-x-2">
-                  <Clock className="h-4 w-4 text-cyan-400" />
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">Video Agenda & Chapters</h3>
+                  <Clock className="h-4 w-4 text-sky-500" />
+                  <h3 className={`text-xs font-bold font-mono uppercase tracking-wider ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    Clickable Pitch Chapters
+                  </h3>
                 </div>
                 <span className="text-[11px] text-slate-400 font-mono">2 Min Total</span>
               </div>
@@ -351,25 +277,25 @@ export default function VideoSection({ onStartSimulation }) {
                       onClick={() => seekToChapter(ch.time, idx)}
                       className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
                         isCurrent
-                          ? 'bg-cyan-950/60 border-cyan-500/50 shadow-md shadow-cyan-500/10'
-                          : 'bg-slate-900/50 border-slate-800/80 hover:bg-slate-900 hover:border-slate-700'
+                          ? isDark ? 'bg-sky-950/60 border-sky-500/50 shadow-md' : 'bg-sky-50 border-sky-300 shadow-sm'
+                          : isDark ? 'bg-slate-900/50 border-slate-800/80 hover:bg-slate-900' : 'bg-white border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className={`text-xs font-mono font-bold ${isCurrent ? 'text-cyan-400' : 'text-slate-400'}`}>
-                          {ch.label}
+                        <span className={`text-xs font-mono font-bold ${isCurrent ? 'text-sky-500' : 'text-slate-400'}`}>
+                          [{ch.label}]
                         </span>
                         {isCurrent && (
-                          <span className="bg-cyan-950 text-cyan-300 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-500/40">
-                            NOW PLAYING
+                          <span className="bg-sky-950 text-sky-300 text-[10px] font-mono px-2 py-0.5 rounded border border-sky-500/40 font-bold">
+                            CURRENT CHAPTER
                           </span>
                         )}
                       </div>
 
-                      <h4 className={`text-xs font-semibold mt-1.5 ${isCurrent ? 'text-white' : 'text-slate-300'}`}>
+                      <h4 className={`text-xs font-bold mt-1.5 ${isCurrent ? 'text-white font-bold' : isDark ? 'text-slate-300' : 'text-slate-800'}`}>
                         {ch.title}
                       </h4>
-                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
+                      <p className={`text-[11px] mt-1 line-clamp-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         {ch.desc}
                       </p>
                     </div>
@@ -377,54 +303,39 @@ export default function VideoSection({ onStartSimulation }) {
                 })}
               </div>
             </div>
-
-            {/* Quick Action Box */}
-            <div className="glass-card rounded-2xl p-4 border border-emerald-500/30 bg-emerald-950/10">
-              <div className="flex items-start space-x-3">
-                <Zap className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="text-xs font-bold text-emerald-300">Ready to test our live heuristics?</h4>
-                  <p className="text-[11px] text-slate-300 mt-1">
-                    Run live scenarios for India West Coast, Ningbo, and Rotterdam refiners.
-                  </p>
-                  <button
-                    onClick={onStartSimulation}
-                    className="mt-3 flex items-center space-x-1.5 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 px-3 py-1.5 rounded-lg transition-all"
-                  >
-                    <span>Jump to Live Simulator</span>
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
           </div>
 
         </div>
 
-        {/* Collapsible Executive Transcript Card */}
-        {showTranscript && (
-          <div className="mt-8 glass-card rounded-2xl p-6 border border-slate-800 bg-slate-950/90 animate-fadeIn">
+        {/* Verbatim Pitch Script Drawer */}
+        {showScript && (
+          <div className={`mt-8 rounded-2xl p-6 border animate-fadeIn ${
+            isDark ? 'stitch-card-dark' : 'stitch-card-light'
+          }`}>
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
               <div className="flex items-center space-x-2">
-                <FileText className="h-5 w-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-white">Pitch Video Executive Transcript</h3>
+                <FileText className="h-5 w-5 text-sky-500" />
+                <h3 className={`text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Verbatim 2-Minute Pitch Video Script
+                </h3>
               </div>
-              <span className="text-xs text-slate-400 font-mono">Verified Submission Transcript</span>
+              <span className="text-xs font-mono text-slate-400">Fellowship Qualifier Script</span>
             </div>
 
-            <div className="space-y-4 text-xs text-slate-300 leading-relaxed font-sans max-h-80 overflow-y-auto pr-2">
+            <div className={`space-y-4 text-xs leading-relaxed font-sans max-h-80 overflow-y-auto pr-2 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}>
               <p>
-                <strong className="text-cyan-400 font-mono">[0:00 - Problem Statement]:</strong> "Good day reviewers. Over 21 million barrels of crude oil pass through the Strait of Hormuz daily—accounting for 21% of global liquid petroleum. A single naval blockade or asymmetric mine hazard creates immediate supply shock, driving spot VLCC charter rates beyond $250,000 per day and triggering panics across sovereign strategic petroleum reserves..."
+                <strong className="text-sky-500 font-mono">[0:00 – 0:30] The Crisis & Problem Framing:</strong> "The Strait of Hormuz carries 21 million barrels of crude oil daily—a fifth of global supply. When this chokepoint is severed, the problem isn't just missing oil; it's decision paralysis across volatile freight rates, sovereign reserve depletion, and chemical blend mismatches. That’s why I built HORMIZ-ALT AI—an autonomous multimodal energy routing and strategic procurement engine."
               </p>
               <p>
-                <strong className="text-cyan-400 font-mono">[0:35 - Multimodal Heuristics]:</strong> "HORMIZ-ALT AI introduces a dynamic multi-commodity Mixed Integer Linear Programming (MILP) engine. Instead of relying on static ocean rerouting, our algorithm dynamically balances Saudi Petroline (5.0M bpd to Yanbu), UAE ADCOP Habshan pipeline (1.5M bpd to Fujairah), and INSTC Caspian containerized rail freight..."
+                <strong className="text-sky-500 font-mono">[0:30 – 1:05] Live Product & Multi-Corridor Solver Demo:</strong> "Using our live GIS route engine, the platform ingests vessel telemetry and spot Platts pricing, then runs Mixed-Integer Linear Programming and Graph Neural Networks to optimize alternative throughput. It dynamically balances the Saudi East-West Petroline to Yanbu, the UAE ADCOP pipeline to Fujairah, and the INSTC Eurasian rail-bridge—computing real-time voyage transit deltas, freight surcharges, and derivative hedging requirements."
               </p>
               <p>
-                <strong className="text-cyan-400 font-mono">[1:10 - Enterprise Action]:</strong> "Beyond spatial optimization, our platform features an LLM Risk Synthesizer that ingests satellite telemetry, AIS vessel feeds, and S&P Platts war-risk insurance premiums, translating them into executable SAP and Oracle ERP purchase orders within 180 milliseconds..."
+                <strong className="text-sky-500 font-mono">[1:05 – 1:35] Systems Architecture, Security & Enterprise Integration:</strong> "Behind the UI, HORMIZ-ALT operates as a 4-tier event-driven system. We implement an AIS Zero-Trust module to filter maritime GPS spoofing, translate war-risk insurance spikes into streamed executive procurement directives, and dispatch idempotent webhooks directly into SAP S/4HANA and Oracle ERP systems."
               </p>
               <p>
-                <strong className="text-cyan-400 font-mono">[1:45 - Business & Monetization]:</strong> "We target Tier-1 refineries and sovereign SPR managers via an Enterprise SaaS model at $50,000 per month per facility. Thank you for evaluating HORMIZ-ALT AI."
+                <strong className="text-sky-500 font-mono">[1:35 – 2:00] Business Model & Critical Boundary Awareness:</strong> "We monetize via a $50,000 monthly enterprise tier for refinery operators and sovereign SPR managers. But true systems maturity requires naming limits: overland bypass pipelines can only absorb 6.5 million bpd of the 21 million bpd deficit, leaving a global net shortfall that requires physical demand rationing. HORMIZ-ALT doesn't pretend to invent non-existent capacity—it optimizes every single available barrel."
               </p>
             </div>
           </div>

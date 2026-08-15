@@ -16,7 +16,8 @@ import {
   Sun,
   Moon,
   Tv,
-  DollarSign
+  DollarSign,
+  Award
 } from 'lucide-react';
 
 export default function Header({ theme, toggleTheme, onOpenAIMemo, activeTab, setActiveTab }) {
@@ -25,6 +26,7 @@ export default function Header({ theme, toggleTheme, onOpenAIMemo, activeTab, se
 
   const navItems = [
     { id: 'hero', label: 'Overview', icon: Compass },
+    { id: 'polymath-matrix', label: 'Polymath Matrix', icon: Award },
     { id: 'news', label: 'News Broadcast', icon: Tv },
     { id: 'financial-crisis', label: 'Financial Shock', icon: DollarSign },
     { id: 'simulator', label: 'Routing Engine', icon: Activity },
@@ -68,7 +70,7 @@ export default function Header({ theme, toggleTheme, onOpenAIMemo, activeTab, se
             <span className={`hidden sm:inline px-2 py-0.5 rounded text-[11px] font-mono border ${
               isDark ? 'bg-emerald-950/80 border-emerald-500/40 text-emerald-300' : 'bg-emerald-100 border-emerald-300 text-emerald-800'
             }`}>
-              ● Stitch Enterprise Design System
+              ● Polymath 8-Dimension Matrix Verified
             </span>
             <span className="font-mono text-[11px] opacity-75">Polymath Fellowship 2026</span>
           </div>
@@ -122,7 +124,6 @@ export default function Header({ theme, toggleTheme, onOpenAIMemo, activeTab, se
           {/* Action CTAs & Theme Toggle */}
           <div className="flex items-center space-x-3">
             
-            {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
               className={`p-2 rounded-lg border transition-all ${
@@ -141,7 +142,6 @@ export default function Header({ theme, toggleTheme, onOpenAIMemo, activeTab, se
               <span>AI CPO Memo</span>
             </button>
 
-            {/* Mobile Menu Button */}
             <div className="xl:hidden flex items-center">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import Header from './components/Header';
 import LiveTickerBar from './components/LiveTickerBar';
 import Hero from './components/Hero';
+import PolymathMatrix from './components/PolymathMatrix';
 import NewsBroadcastSection from './components/NewsBroadcastSection';
 import FinancialCrisisSection from './components/FinancialCrisisSection';
 import Simulator from './components/Simulator';
@@ -17,7 +18,7 @@ import Footer from './components/Footer';
 import { calculateRouteMetrics } from './data/simulationData';
 
 export default function App() {
-  const [theme, setTheme] = useState('dark'); // 'dark' | 'light'
+  const [theme, setTheme] = useState('dark');
   const [activeTab, setActiveTab] = useState('hero');
   const [isAIMemoOpen, setIsAIMemoOpen] = useState(false);
 
@@ -92,17 +93,22 @@ export default function App() {
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
 
-        {/* Section 2: BBC & Global News Video Broadcast Hub */}
+        {/* Section 2: Polymath 8-Dimension Intersection Matrix */}
+        <PolymathMatrix
+          theme={theme}
+        />
+
+        {/* Section 3: BBC & Global News Video Broadcast Hub */}
         <NewsBroadcastSection
           theme={theme}
         />
 
-        {/* Section 3: Financial Crisis & Sovereign SPR Reserve Engine */}
+        {/* Section 4: Financial Crisis & Sovereign SPR Reserve Engine */}
         <FinancialCrisisSection
           theme={theme}
         />
 
-        {/* Section 4: Core Product Interactive Multimodal Rerouting Simulator */}
+        {/* Section 5: Core Product Interactive Multimodal Rerouting Simulator */}
         <section id="simulator" className={`py-16 border-b transition-colors ${
           isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
         }`}>
@@ -130,6 +136,7 @@ export default function App() {
                   simParams={simParams}
                   setSimParams={setSimParams}
                   onResetParams={handleResetParams}
+                  theme={theme}
                 />
               </div>
 
@@ -137,6 +144,7 @@ export default function App() {
                 <SimResults
                   metrics={metrics}
                   onOpenAIMemo={() => setIsAIMemoOpen(true)}
+                  theme={theme}
                 />
               </div>
 
@@ -145,7 +153,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 5: Interactive GIS Route Map Section */}
+        {/* Section 6: Interactive GIS Route Map Section */}
         <section id="map" className={`py-16 border-b transition-colors ${
           isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
         }`}>
@@ -154,32 +162,32 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 6: Live AI Agent Decision Studio */}
+        {/* Section 7: Live AI Agent Decision Studio */}
         <section id="agent-studio" className={`py-16 border-b transition-colors ${
           isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
         }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <AIAgentStudio simParams={simParams} metrics={metrics} />
+            <AIAgentStudio simParams={simParams} metrics={metrics} theme={theme} />
           </div>
         </section>
 
-        {/* Section 7: Systems & Architecture Layer (Polymath Engineering Breakdown) */}
+        {/* Section 8: Systems & Architecture Layer (Polymath Engineering Breakdown) */}
         <ArchitectureDiagram
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
 
-        {/* Section 8: Business Model & Go-To-Market (GTM) Strategy */}
+        {/* Section 9: Business Model & Go-To-Market (GTM) Strategy */}
         <GTMStrategy
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
 
-        {/* Section 9: Critical Self-Awareness & Limits (Vulnerability Analysis) */}
+        {/* Section 10: Critical Self-Awareness & Limits (Vulnerability Analysis) */}
         <VulnerabilitySection
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
       </main>
 
-      {/* Section 10: Submission Metadata & Footer */}
+      {/* Section 11: Submission Metadata & Footer */}
       <Footer />
 
       {/* Interactive AI CPO Executive Memo Synthesizer Modal */}
