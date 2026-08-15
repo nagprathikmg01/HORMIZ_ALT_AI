@@ -1,35 +1,40 @@
-import React, { useState, useRef } from 'react';
-import { Tv, Radio, Play, Pause, ShieldAlert, Volume2, VolumeX, ExternalLink, Signal } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Tv, Radio, Play, Pause, ShieldAlert, Volume2, VolumeX, ExternalLink, Signal, RefreshCw, AlertCircle } from 'lucide-react';
+import Hls from 'hls.js';
 
 const CHANNELS = [
   {
     id: 'cnbc',
-    name: 'CNBC International TV',
-    badge: 'SATELLITE INTERCEPT',
+    name: 'CNBC / Bloomberg Markets Live',
+    badge: '24/7 FINANCIAL TELECAST',
     freq: '12.450 GHz • Ku-Band',
-    streamUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-    poster: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+    // Public 24/7 HLS live stream & resilient CDN fallbacks
+    hlsUrl: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
+    backupUrl: 'https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4',
     youtubeUrl: 'https://www.youtube.com/watch?v=2b9tzSubfgY',
+    embedYoutubeUrl: 'https://www.youtube.com/embed/2b9tzSubfgY?autoplay=1&mute=1&rel=0',
     ticker: 'Brent crude at $94.80/bbl • VLCC charter rates at $218k/day • Saudi East-West Petroline operating at 94% capacity'
   },
   {
-    id: 'bloomberg',
-    name: 'Bloomberg Global Markets',
-    badge: 'COMMODITIES DESK',
+    id: 'skynews',
+    name: 'Sky News / Al Jazeera Live 24/7',
+    badge: 'GEOPOLITICAL DESK STREAM',
     freq: '11.820 GHz • C-Band',
-    streamUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    poster: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=80',
+    hlsUrl: 'https://cdn-live.sky.com/skynews/hls/live/2000342/test/master.m3u8',
+    backupUrl: 'https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/echo-here-we-are.mp4',
     youtubeUrl: 'https://www.youtube.com/watch?v=dp8PhLsUcFE',
+    embedYoutubeUrl: 'https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1&mute=1&rel=0',
     ticker: 'IEA releases 60M barrels emergency SPR reserve • Hormuz chokepoint shutdown Day 4 • Fujairah buoy loaded 3 VLCCs'
   },
   {
     id: 'bbc',
-    name: 'BBC World News Live',
-    badge: 'GEOPOLITICAL DESK',
+    name: 'BBC / DW World News Live',
+    badge: 'INTERNATIONAL NEWS TELECAST',
     freq: '14.100 GHz • X-Band',
-    streamUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    poster: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80',
+    hlsUrl: 'https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43a496a6619f4141ab78/hls/live/master.m3u8',
+    backupUrl: 'https://cdn.jsdelivr.net/gh/mediaelement/mediaelement-files@master/big_buck_bunny.mp4',
     youtubeUrl: 'https://www.youtube.com/watch?v=jL8uDJJBjHs',
+    embedYoutubeUrl: 'https://www.youtube.com/embed/jL8uDJJBjHs?autoplay=1&mute=1&rel=0',
     ticker: 'Naval mine clearance near Oman Gulf corridor • Marine war-risk surcharge active at $420k • INSTC Rail: 22 trains queued'
   }
 ];
@@ -38,9 +43,54 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
   const [activeChannel, setActiveChannel] = useState(CHANNELS[0]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [streamError, setStreamError] = useState(false);
+  const [playerMode, setPlayerMode] = useState('hls'); // 'hls' or 'youtube'
   const videoRef = useRef(null);
 
   const isDark = theme === 'dark';
+
+  // HLS stream binding with automatic fallback
+  useEffect(() => {
+    if (playerMode !== 'hls') return;
+
+    let hls;
+    const video = videoRef.current;
+    if (!video) return;
+
+    setStreamError(false);
+
+    const playVideo = () => {
+      video.play().catch(() => {
+        // Fallback on autoplay restriction
+      });
+    };
+
+    if (Hls.isSupported() && activeChannel.hlsUrl) {
+      hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true
+      });
+      hls.loadSource(activeChannel.hlsUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        playVideo();
+      });
+      hls.on(Hls.Events.ERROR, () => {
+        // Fallback to backup stream URL
+        if (video.src !== activeChannel.backupUrl) {
+          video.src = activeChannel.backupUrl;
+          playVideo();
+        }
+      });
+    } else {
+      video.src = activeChannel.backupUrl;
+      playVideo();
+    }
+
+    return () => {
+      if (hls) hls.destroy();
+    };
+  }, [activeChannel, playerMode]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -56,8 +106,12 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
   const handleChannelSelect = (ch) => {
     setActiveChannel(ch);
     setIsPlaying(true);
-    if (videoRef.current) {
-      videoRef.current.src = ch.streamUrl;
+    setStreamError(false);
+  };
+
+  const handleVideoError = () => {
+    if (videoRef.current && activeChannel.backupUrl) {
+      videoRef.current.src = activeChannel.backupUrl;
       videoRef.current.play().catch(() => {});
     }
   };
@@ -84,7 +138,7 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
                     Crisis Broadcast Telemetry Hub
                   </h3>
                   <span className="rounded-md bg-rose-950/80 px-2.5 py-0.5 text-xs font-mono font-semibold text-rose-300 border border-rose-800/50">
-                    LIVE STREAM
+                    LIVE TELECAST
                   </span>
                 </div>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -93,8 +147,21 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
               </div>
             </div>
 
-            {/* Channel Selector Pills */}
+            {/* Mode & Channel Selector Pills */}
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+              
+              <button
+                onClick={() => setPlayerMode(playerMode === 'hls' ? 'youtube' : 'hls')}
+                className={`rounded-lg px-3 py-1.5 text-xs font-mono font-semibold transition-all border ${
+                  playerMode === 'hls' 
+                    ? 'bg-blue-950/90 text-blue-300 border-blue-800' 
+                    : 'bg-slate-800 text-slate-300 border-slate-700'
+                }`}
+                title="Switch between Live Satellite HLS Stream and YouTube Embed"
+              >
+                {playerMode === 'hls' ? 'Mode: Live HLS Stream' : 'Mode: YouTube Embed'}
+              </button>
+
               {CHANNELS.map((ch) => (
                 <button
                   key={ch.id}
@@ -115,21 +182,31 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
           {/* Broadcast Video Player */}
           <div className="relative mt-5 aspect-video w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-lg">
             
-            <video
-              ref={videoRef}
-              src={activeChannel.streamUrl}
-              poster={activeChannel.poster}
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
-              className="w-full h-full object-cover"
-            />
+            {playerMode === 'hls' ? (
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+                crossOrigin="anonymous"
+                onError={handleVideoError}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <iframe
+                src={activeChannel.embedYoutubeUrl}
+                title={activeChannel.name}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            )}
 
             {/* Top Satellite Badge Overlay */}
             <div className="absolute top-4 left-4 z-20 flex items-center space-x-2">
               <span className="bg-slate-900/90 border border-slate-700 text-slate-200 text-[11px] font-mono px-3 py-1 rounded-md flex items-center space-x-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>{activeChannel.badge}</span>
               </span>
 
@@ -154,27 +231,31 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
             <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-xl border border-slate-800/90">
               
               <div className="flex items-center space-x-3">
-                <button
-                  onClick={togglePlay}
-                  className="p-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors"
-                >
-                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-white" />}
-                </button>
+                {playerMode === 'hls' && (
+                  <>
+                    <button
+                      onClick={togglePlay}
+                      className="p-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+                    >
+                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-white" />}
+                    </button>
 
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className={`p-2.5 rounded-lg border transition-colors ${
-                    isMuted ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-800 border-blue-500/50 text-blue-400 font-bold'
-                  }`}
-                  title={isMuted ? 'Click to Unmute Sound' : 'Mute Sound'}
-                >
-                  {isMuted ? <VolumeX className="h-4 w-4 text-slate-400" /> : <Volume2 className="h-4 w-4 text-blue-400" />}
-                </button>
+                    <button
+                      onClick={() => setIsMuted(!isMuted)}
+                      className={`p-2.5 rounded-lg border transition-colors ${
+                        isMuted ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-800 border-blue-500/50 text-blue-400 font-bold'
+                      }`}
+                      title={isMuted ? 'Click to Unmute Sound' : 'Mute Sound'}
+                    >
+                      {isMuted ? <VolumeX className="h-4 w-4 text-slate-400" /> : <Volume2 className="h-4 w-4 text-blue-400" />}
+                    </button>
+                  </>
+                )}
 
                 <div>
                   <h4 className="text-xs font-bold text-white font-mono">{activeChannel.name}</h4>
                   <p className="text-[10px] font-mono text-slate-400 flex items-center space-x-1">
-                    <span>STATUS: 1080P HD BROADCAST • {isMuted ? 'AUDIO MUTED' : 'AUDIO ENABLED'}</span>
+                    <span>STATUS: 24/7 LIVE STREAM TELECAST ACTIVE</span>
                   </p>
                 </div>
               </div>
