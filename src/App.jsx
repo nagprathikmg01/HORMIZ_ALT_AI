@@ -3,12 +3,12 @@ import Header from './components/Header';
 import LiveTickerBar from './components/LiveTickerBar';
 import LiveCommoditiesBar from './components/LiveCommoditiesBar';
 import Hero from './components/Hero';
+import RouteMap from './components/RouteMap';
 import PolymathMatrix from './components/PolymathMatrix';
 import LiveBroadcastHub from './components/LiveBroadcastHub';
 import FinancialCrisisSection from './components/FinancialCrisisSection';
 import Simulator from './components/Simulator';
 import SimResults from './components/SimResults';
-import RouteMap from './components/RouteMap';
 import AIAgentStudio from './components/AIAgentStudio';
 import ArchitectureDiagram from './components/ArchitectureDiagram';
 import AIGeneratorModal from './components/AIGeneratorModal';
@@ -73,8 +73,8 @@ export default function App() {
   return (
     <div className={`min-h-screen transition-colors duration-300 font-sans ${
       isDark 
-        ? 'bg-slate-950 text-slate-100 selection:bg-sky-500 selection:text-slate-950' 
-        : 'bg-slate-50 text-slate-900 selection:bg-sky-500 selection:text-white'
+        ? 'bg-[#090d16] text-slate-100 selection:bg-blue-600 selection:text-white' 
+        : 'bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white'
     }`}>
       
       {/* Executive Fixed Header Navigation */}
@@ -102,36 +102,45 @@ export default function App() {
           onOpenAIMemo={() => setIsAIMemoOpen(true)}
         />
 
-        {/* Section 2: Polymath 8-Dimension Intersection Matrix */}
+        {/* Section 2: Interactive GIS Global Rerouting Map (Positioned at Starting of Page) */}
+        <section id="map" className={`py-16 border-b transition-colors ${
+          isDark ? 'bg-[#090d16] border-slate-800/80' : 'bg-slate-50 border-slate-200'
+        }`}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <RouteMap activeRoute="alt1" />
+          </div>
+        </section>
+
+        {/* Section 3: Polymath 8-Dimension Intersection Matrix */}
         <PolymathMatrix
           theme={theme}
         />
 
-        {/* Section 3: Crisis Live Broadcast Telemetry Hub (CNBC, Bloomberg, BBC) */}
+        {/* Section 4: Crisis Live Broadcast Telemetry Hub (CNBC, Bloomberg, BBC) */}
         <LiveBroadcastHub
           theme={theme}
         />
 
-        {/* Section 4: 2-Minute System Architecture Pitch Video */}
+        {/* Section 5: 2-Minute System Architecture Pitch Video */}
         <VideoSection
           onStartSimulation={handleStartSimulation}
           theme={theme}
         />
 
-        {/* Section 5: Financial Crisis & Sovereign SPR Reserve Engine */}
+        {/* Section 6: Financial Crisis & Sovereign SPR Reserve Engine */}
         <FinancialCrisisSection
           theme={theme}
         />
 
-        {/* Section 6: Core Product Interactive Multimodal Rerouting Simulator */}
+        {/* Section 7: Core Product Interactive Multimodal Rerouting Simulator */}
         <section id="simulator" className={`py-16 border-b transition-colors ${
-          isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+          isDark ? 'bg-[#090d16] border-slate-800/80' : 'bg-slate-50 border-slate-200'
         }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="text-center max-w-3xl mx-auto mb-12">
-              <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-mono mb-3 ${
-                isDark ? 'bg-sky-950/80 border border-sky-500/40 text-sky-300' : 'bg-sky-50 border border-sky-200 text-sky-700'
+              <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-md text-xs font-mono mb-3 ${
+                isDark ? 'bg-slate-800/90 border border-slate-700 text-slate-300' : 'bg-slate-100 border border-slate-300 text-slate-800'
               }`}>
                 <span>Interactive Live Product Simulator</span>
               </div>
@@ -168,18 +177,9 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 7: Interactive GIS Route Map Section */}
-        <section id="map" className={`py-16 border-b transition-colors ${
-          isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-        }`}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <RouteMap activeRoute="alt1" />
-          </div>
-        </section>
-
         {/* Section 8: Live AI Agent Decision Studio */}
         <section id="agent-studio" className={`py-16 border-b transition-colors ${
-          isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+          isDark ? 'bg-[#090d16] border-slate-800/80' : 'bg-slate-50 border-slate-200'
         }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AIAgentStudio simParams={simParams} metrics={metrics} theme={theme} />
