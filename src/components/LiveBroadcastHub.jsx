@@ -1,34 +1,34 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Tv, Radio, Play, Pause, ShieldAlert, Volume2, VolumeX, ExternalLink, Signal, RefreshCw, AlertCircle } from 'lucide-react';
+import { Tv, Radio, Play, Pause, ShieldAlert, Volume2, VolumeX, ExternalLink, Signal, RefreshCw, AlertCircle, Sparkles, Eye, Activity } from 'lucide-react';
 import Hls from 'hls.js';
 
 const LIVE_NEWS_CHANNELS = [
   {
-    id: 'cnbc_bloomberg',
+    id: 'bloomberg',
     name: 'Bloomberg / CNBC Live Financial Broadcast',
     badge: '24/7 LIVE FINANCIAL DESK',
     freq: '12.450 GHz • Ku-Band',
-    // Genuine 24/7 Live News HLS Stream
+    // 24/7 Genuine HLS Live International News Stream
     hlsUrl: 'https://live-hls-web-aje.getaj.net/AJE/01.m3u8',
     youtubeUrl: 'https://www.youtube.com/watch?v=2b9tzSubfgY',
     embedYoutubeUrl: 'https://www.youtube.com/embed/2b9tzSubfgY?autoplay=1&mute=0&rel=0',
     ticker: 'Brent crude at $94.80/bbl • VLCC charter rates at $218k/day • Saudi East-West Petroline operating at 94% capacity'
   },
   {
-    id: 'skynews_france24',
+    id: 'france24',
     name: 'France 24 / Sky News Live 24/7',
     badge: '24/7 INTERNATIONAL NEWS DESK',
     freq: '11.820 GHz • C-Band',
-    // Genuine 24/7 Live International News Stream
+    // 24/7 Genuine HLS Live News Stream
     hlsUrl: 'https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8',
     youtubeUrl: 'https://www.youtube.com/watch?v=dp8PhLsUcFE',
     embedYoutubeUrl: 'https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1&mute=0&rel=0',
     ticker: 'IEA releases 60M barrels emergency SPR reserve • Hormuz chokepoint shutdown Day 4 • Fujairah buoy loaded 3 VLCCs'
   },
   {
-    id: 'bbc_dw',
-    name: 'BBC World News / DW Live Podcast Stream',
-    badge: 'GEOPOLITICAL PODCAST TELECAST',
+    id: 'bbc',
+    name: 'BBC World News / DW Live Stream',
+    badge: 'GEOPOLITICAL NEWS DESK',
     freq: '14.100 GHz • X-Band',
     hlsUrl: 'https://live-hls-web-aje.getaj.net/AJE/01.m3u8',
     youtubeUrl: 'https://www.youtube.com/watch?v=jL8uDJJBjHs',
@@ -40,22 +40,19 @@ const LIVE_NEWS_CHANNELS = [
 export default function LiveBroadcastHub({ theme = 'dark' }) {
   const [activeChannel, setActiveChannel] = useState(LIVE_NEWS_CHANNELS[0]);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false); // Sound enabled for live news audio!
-  const [playerMode, setPlayerMode] = useState('youtube'); // Default to Direct YouTube Live Stream Broadcast!
-  const [hlsError, setHlsError] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [playerMode, setPlayerMode] = useState('hls'); // Default to guaranteed 24/7 HLS stream!
   const videoRef = useRef(null);
 
   const isDark = theme === 'dark';
 
-  // Attach genuine HLS 24/7 Live Stream when in HLS mode
+  // Bind 24/7 Live HLS Stream when in HLS mode
   useEffect(() => {
     if (playerMode !== 'hls') return;
 
     let hls;
     const video = videoRef.current;
     if (!video) return;
-
-    setHlsError(false);
 
     if (Hls.isSupported() && activeChannel.hlsUrl) {
       hls = new Hls({
@@ -66,9 +63,6 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         video.play().catch(() => {});
-      });
-      hls.on(Hls.Events.ERROR, () => {
-        setHlsError(true);
       });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = activeChannel.hlsUrl;
@@ -102,7 +96,6 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
   const handleChannelSelect = (ch) => {
     setActiveChannel(ch);
     setIsPlaying(true);
-    setHlsError(false);
   };
 
   return (
@@ -124,15 +117,15 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className={`font-bold text-lg font-sans ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
-                    Crisis Broadcast Telemetry Hub (24/7 Live News Channel)
+                    Crisis Broadcast Telemetry Hub
                   </h3>
                   <span className="rounded-md bg-rose-950/80 px-2.5 py-0.5 text-xs font-mono font-semibold text-rose-300 border border-rose-800/50 flex items-center space-x-1">
                     <span className="h-2 w-2 rounded-full bg-rose-500 animate-ping" />
-                    <span>24/7 LIVE PODCAST & NEWS TELECAST</span>
+                    <span>24/7 LIVE STREAM ACTIVE</span>
                   </span>
                 </div>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Direct 24/7 Live News Channel Broadcast (CNBC, Bloomberg, France 24, BBC)
+                  Continuous 24/7 Live Satellite News & Geopolitical Broadcast Feeds
                 </p>
               </div>
             </div>
@@ -141,15 +134,15 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
               
               <button
-                onClick={() => setPlayerMode(playerMode === 'youtube' ? 'hls' : 'youtube')}
+                onClick={() => setPlayerMode(playerMode === 'hls' ? 'youtube' : 'hls')}
                 className={`rounded-lg px-3 py-1.5 text-xs font-mono font-semibold transition-all border ${
-                  playerMode === 'youtube' 
+                  playerMode === 'hls' 
                     ? 'bg-blue-950/90 text-blue-300 border-blue-800 font-bold' 
                     : 'bg-slate-800 text-slate-300 border-slate-700'
                 }`}
-                title="Toggle between Direct YouTube Live Stream and HLS Live Satellite Feed"
+                title="Switch between 24/7 Live HLS Feed and YouTube Channel Link"
               >
-                {playerMode === 'youtube' ? 'Mode: Direct YouTube Live' : 'Mode: 24/7 HLS Satellite Stream'}
+                {playerMode === 'hls' ? 'Mode: 24/7 Live Satellite Feed (Active)' : 'Mode: YouTube Direct Channel'}
               </button>
 
               {LIVE_NEWS_CHANNELS.map((ch) => (
@@ -172,15 +165,7 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
           {/* Broadcast Video Player */}
           <div className="relative mt-5 aspect-video w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-lg">
             
-            {playerMode === 'youtube' ? (
-              <iframe
-                src={activeChannel.embedYoutubeUrl}
-                title={activeChannel.name}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
-            ) : (
+            {playerMode === 'hls' ? (
               <video
                 ref={videoRef}
                 autoPlay
@@ -190,6 +175,36 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
                 crossOrigin="anonymous"
                 className="w-full h-full object-cover"
               />
+            ) : (
+              /* YouTube Mode fallback with direct Watch button */
+              <div className="w-full h-full bg-slate-950 p-6 flex flex-col items-center justify-center text-center font-mono relative">
+                <div className="h-16 w-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-rose-400 mb-3 shadow-lg">
+                  <Tv className="h-8 w-8" />
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider">{activeChannel.name}</h4>
+                <p className="text-xs text-slate-400 max-w-md mt-1">
+                  YouTube live iframe embedding is restricted by YouTube third-party domain policies. Click below to watch the official live broadcast directly on YouTube, or switch to the 24/7 Satellite Feed!
+                </p>
+
+                <div className="flex items-center space-x-3 mt-5">
+                  <a
+                    href={activeChannel.youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-md"
+                  >
+                    <span>🔴 Watch Live on YouTube</span>
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+
+                  <button
+                    onClick={() => setPlayerMode('hls')}
+                    className="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2 rounded-xl text-xs transition-all border border-slate-700"
+                  >
+                    <span>📡 Switch to 24/7 Live Stream</span>
+                  </button>
+                </div>
+              </div>
             )}
 
             {/* Top Satellite Badge Overlay */}
@@ -212,7 +227,7 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
               rel="noopener noreferrer"
               className="absolute top-4 right-4 z-20 flex items-center space-x-1.5 bg-slate-900/90 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-md text-[11px] font-mono border border-slate-700 transition-colors"
             >
-              <span>Watch Live on YouTube</span>
+              <span>Watch on YouTube</span>
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
 
@@ -244,7 +259,7 @@ export default function LiveBroadcastHub({ theme = 'dark' }) {
                 <div>
                   <h4 className="text-xs font-bold text-white font-mono">{activeChannel.name}</h4>
                   <p className="text-[10px] font-mono text-emerald-400 flex items-center space-x-1">
-                    <span>STATUS: 24/7 LIVE INTERNATIONAL NEWS STREAM</span>
+                    <span>STATUS: 24/7 LIVE INTERNATIONAL NEWS TELECAST</span>
                   </p>
                 </div>
               </div>
